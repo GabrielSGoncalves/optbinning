@@ -53,7 +53,7 @@ OptBinning requires
 * numpy
 * ortools (>=7.2)
 * pandas
-* scikit-learn (>=0.20.0)
+* scikit-learn (>=0.22.0)
 * scipy
 
 Getting started
@@ -237,7 +237,7 @@ Benchmarks
 
 The following table shows how OptBinning compares to `scorecardpy <https://github.com/ShichenXie/scorecardpy>`_ 0.1.9.1.1 on a selection of variables from the public dataset, Home Credit Default Risk - Kaggle’s competition `Link <https://www.kaggle.com/c/home-credit-default-risk/data>`_. This dataset contains 307511 samples.The experiments were run on Intel(R) Core(TM) i5-3317 CPU at 1.70GHz, using a single core, running Linux. For scorecardpy, we use default settings only increasing the maximum number of bins ``bin_num_limit=20``. For OptBinning, we use default settings (``max_n_prebins=20``) only changing the maximum allowed p-value between consecutive bins, ``max_pvalue=0.05``.
 
-To compare softwares we use the shifted geometric mean, typically used in mathematical optimization benchmarks: http://plato.asu.edu/bench.html. Using the shifted (by 1 second) geometric mean we found that **OptBinning** is **17x** faster than scorecardpy, with an average IV increase of **12%**. Besides the speed and IV gains, OptBinning includes many more constraints and monotonicity options.
+To compare softwares we use the shifted geometric mean, typically used in mathematical optimization benchmarks: http://plato.asu.edu/bench.html. Using the shifted (by 1 second) geometric mean we found that **OptBinning** is **17x** faster than scorecardpy, with an average IV increment of **12%**. Besides the speed and IV gains, OptBinning includes many more constraints and monotonicity options.
 
 +----------------------------+------------------+----------------+-----------------+---------------+
 | Variable                   | scorecardpy_time | scorecardpy_IV | optbinning_time | optbinning_IV |
@@ -279,6 +279,27 @@ To compare softwares we use the shifted geometric mean, typically used in mathem
 
 (C): categorical variable.
 (*): max p-value between consecutive bins > 0.05.
+
+The binning of variables with monotonicity trend peak or valley can benefit from the option ``monotonicity_trend="auto_heuristic"`` at the expense of finding a suboptimal solution for some cases. The following table compares the options ``monotonicity_trend="auto"`` and ``monotonicity_trend="auto_heuristic"``,
+
++----------------------------+----------------+----------------+----------------+----------------+
+| Variable                   |      auto_time |        auto_IV | heuristic_time |   heuristic_IV |
++============================+================+================+================+================+
+| AMT_INCOME_TOTAL           |      0.363 s   |    0.011705    |      0.322 s   |    0.011705    |
++----------------------------+----------------+----------------+----------------+----------------+
+| AMT_CREDIT                 |      0.634 s   |   0.059311     |      0.469 s   |    0.058643    |
++----------------------------+----------------+----------------+----------------+----------------+
+| AMT_ANNUITY                |      0.648 s   |   0.031179     |      0.505 s   |    0.031179    |
++----------------------------+----------------+----------------+----------------+----------------+
+| AMT_GOODS_PRICE            |      0.401 s   |   0.092032     |      0.299 s   |    0.092032    |
++----------------------------+----------------+----------------+----------------+----------------+
+| REGION_POPULATION_RELATIVE |      0.392 s   |   0.035567     |      0.244 s   |    0.035567    |
++----------------------------+----------------+----------------+----------------+----------------+
+| **TOTAL**                  | **2.438 s**    | **0.229794**   | **1.839 s**    | **0.229126**   |
++----------------------------+----------------+----------------+----------------+----------------+
+
+Observe that CPU time is reduced by 25% losing less than 1% in IV. The differences in CPU time are more noticeable as the
+number of bins increases, see http://gnpalencia.org/optbinning/tutorials/tutorial_binary_large_scale.html.
 
 
 Contributing
